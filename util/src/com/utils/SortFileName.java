@@ -21,12 +21,13 @@ public class SortFileName {
 	}
 
 	public void getFileName() {
-		ifExistPrintFileDelete();
+
 		File file = new File(filePath);
 		if (!file.exists()) {
 			System.out.println(filePath + "²»´æÔÚ£¡");
 			return;
 		}
+		ifExistPrintFileDelete();
 		putFileNameToFileNameMap(file);
 	}
 
@@ -44,25 +45,14 @@ public class SortFileName {
 			for (File file2 : listFiles) {
 				putFileNameToFileNameMap(file2);
 			}
-		}else{
+		} else {
 			String name = file.getName();
+			String path = file.getPath();
 			String[] split = name.split("\\.");
 			String substring = split[0].substring(split[0].length() - 2, split[0].length());
-			fileNameMap.put(substring, "@ " + filePath + "/" + name);
+			fileNameMap.put(substring, "@ " + path);
 		}
-	/*	File fnFile[] = file.listFiles();
-		for (int i = 0; i < fnFile.length; i++) {
-			if (fnFile[i].isDirectory()) {
-				File[] listFiles = fnFile[i].listFiles();
-				for (int j = 0; j < listFiles.length; j++) {
-					
-				}
-			}
-			String fileName = fnFile[i].getName();
-			String[] split = fileName.split("\\.");
-			String substring = split[0].substring(split[0].length() - 2, split[0].length());
-			fileNameMap.put(substring, "@ " + filePath + "/" + fileName);
-		}*/
+		sortFileNamePrint();
 	}
 
 	public void sortFileNamePrint() {
@@ -71,12 +61,7 @@ public class SortFileName {
 		PrintWriter writer = null;
 		try {
 			writer = new PrintWriter(file, "UTF-8");
-			Set<String> keySet = fileNameMap.keySet();
-			List<String> keylist = new ArrayList<String>();
-			for (String string : keySet) {
-				keylist.add(string);
-			}
-			Collections.sort(keylist);
+			List<String> keylist = sortFileName();
 			for (String string : keylist) {
 				writer.println(fileNameMap.get(string));
 			}
@@ -87,23 +72,32 @@ public class SortFileName {
 		}
 	}
 
+	private List<String> sortFileName() {
+		Set<String> keySet = fileNameMap.keySet();
+		List<String> keylist = new ArrayList<String>();
+		for (String string : keySet) {
+			keylist.add(string);
+		}
+		Collections.sort(keylist);
+		return keylist;
+	}
+
 	private File createFile(String fileName) {
 		File file = new File(fileName);
 		if (file.exists()) {
 			file.delete();
-		} else {
-			try {
-				file.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			
+		}
+		try {
+			file.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return file;
 	}
 
 	public static void main(String[] args) {
-		SortFileName sortFileName = new SortFileName("C:/Users/Administrator/Desktop/test");
+		SortFileName sortFileName = new SortFileName("C:/Users/Administrator/Desktop/tes");
 		sortFileName.getFileName();
-		sortFileName.sortFileNamePrint();
 	}
 }
